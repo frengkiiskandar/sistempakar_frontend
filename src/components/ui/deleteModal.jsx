@@ -1,11 +1,11 @@
 import axios from "axios";
 import React from "react";
 
-const ModalDelete = ({ setModalDelete, selectedId, onSuccess }) => {
+const ModalDelete = ({ setModalDelete, selectedId, onSuccess ,jenisDelete}) => {
   const handleDelete = async (e) => {
     e.preventDefault();
     const response = await axios.delete(
-      `${import.meta.env.VITE_BASE_URL}/penyakit/${selectedId}`,
+      `${import.meta.env.VITE_BASE_URL}/${jenisDelete}/${selectedId}`,
     );
     console.log(response.data);
     setModalDelete(false);

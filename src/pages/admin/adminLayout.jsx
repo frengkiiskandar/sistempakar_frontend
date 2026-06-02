@@ -3,14 +3,14 @@ import toast from "react-hot-toast";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 
 const AdminLayout = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const logout = ()=>{
-    toast.success('berhasil logout')
+  const logout = () => {
+    toast.success("berhasil logout");
     setTimeout(() => {
-      navigate('/')
+      navigate("/");
     }, 1000);
-  }
+  };
 
   return (
     <div className="flex min-h-screen bg-green-50">
@@ -56,6 +56,21 @@ const AdminLayout = () => {
                 Data Penyakit
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/admin/gejala"
+                className={({ isActive }) =>
+                  `block px-4 py-3 rounded-md text-sm font-semibold 
+                  ${
+                    isActive
+                      ? "bg-green-500 text-white"
+                      : "text-white hover:bg-green-700"
+                  }`
+                }
+              >
+                Data Gejala
+              </NavLink>
+            </li>
 
             <li>
               <NavLink
@@ -93,7 +108,10 @@ const AdminLayout = () => {
 
         {/* Footer / Logout */}
         <div className="p-4 border-t">
-          <button className="w-full py-2 text-sm bg-gradient-to-b from-slate-600 to-slate-900 text-white rounded-md " onClick={logout}>
+          <button
+            className="w-full py-2 text-sm bg-gradient-to-b from-slate-600 to-slate-900 text-white rounded-md "
+            onClick={logout}
+          >
             Logout
           </button>
         </div>

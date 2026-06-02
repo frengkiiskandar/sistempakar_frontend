@@ -10,6 +10,7 @@ import AdminPenyakit from "../pages/admin/adminPenyakit";
 import ProtectedRoute from "../components/protectedRoute";
 import AdminPenyakitRelasi from "../pages/admin/adminPenyakitRelasi";
 import Tentang from "../pages/main/tentang";
+import AdminGejala from "../pages/admin/adminGejala";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "penyakit",
         element: <AdminPenyakit />,
+      },
+      {
+        path: "gejala",
+        element: <AdminGejala />,
       },
       {
         path: "penyakitRelasi",

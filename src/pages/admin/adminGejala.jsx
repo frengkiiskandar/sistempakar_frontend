@@ -6,16 +6,17 @@ import { useEffect, useState } from "react";
 import { MdNavigateNext } from "react-icons/md";
 import ModalDelete from "../../components/ui/deleteModal";
 import { CiSearch } from "react-icons/ci";
-import TambahPenyakitModal from "../../components/ui/tambahPenyakitModal";
-import EditPenyakitModal from "../../components/ui/editPenyakitModal";
+// import TambahPenyakitModal from "../../components/ui/tambahPenyakitModal";
+import TambahGejalaModal from "../../components/ui/tambahGejalaModal";
+import EditGejalaModal from "../../components/ui/editGejalaModal";
 
-export default function AdminPenyakit() {
+export default function AdminGejala() {
   const [rows, setRows] = useState([]);
   const [modalDelete, setModalDelete] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [tambahPenyakit, setTambahPenyakit] = useState(false);
-  const [jenisDelete, setJenisDelete] = useState('penyakit')
+  const [tambahGejala, setTambahGejala] = useState(false);
+  const [jenisDelete, setJenisDelete] = useState('gejala')
 
   const handleEdit = (id) => {
     setSelectedId(id);
@@ -36,14 +37,14 @@ export default function AdminPenyakit() {
       headerAlign: "center",
     },
     {
-      field: "namaPenyakit",
-      headerName: "Nama penyakit",
-      width: 200,
+      field: "nama_gejala",
+      headerName: "Nama Gejala",
+      width: 800,
       renderCell: (params) => {
         return <span className="text-[16px] font-medium">{params.value}</span>;
       },
     },
-    { field: "deskripsi", headerName: "Deskripsi Penyakit", flex: 1 },
+    { field: "kategori", headerName: "Kategori Gejala", flex: 1 },
     {
       field: "aksi",
       headerName: "Aksi",
@@ -73,10 +74,10 @@ export default function AdminPenyakit() {
     },
   ];
 
-  const getPenyakit = async () => {
+  const getGejala = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/penyakit`,
+        `${import.meta.env.VITE_BASE_URL}/gejala`,
       );
       // console.log(response.data);
       setRows(response.data);
@@ -86,11 +87,11 @@ export default function AdminPenyakit() {
   };
 
   useEffect(() => {
-    getPenyakit();
+    getGejala();
   }, []);
 
   const refetchData = () => {
-    getPenyakit();
+    getGejala();
   };
 
   return (
@@ -98,7 +99,7 @@ export default function AdminPenyakit() {
       <div className="flex justify-start items-center gap-5 mb-5 ">
         <p>Dashboard</p>
         <MdNavigateNext size={20} />
-        <p>Penyakit</p>
+        <p>Gejala</p>
       </div>
 
       {/* tambah data */}
@@ -116,9 +117,9 @@ export default function AdminPenyakit() {
 
         <button
           className="bg-green-700 rounded-md text-white px-5 py-2 hover:bg-green-800"
-          onClick={() => setTambahPenyakit(true)}
+          onClick={() => setTambahGejala(true)}
         >
-          Tambah Penyakit
+          Tambah Gejala
         </button>
       </div>
       <div style={{ height: 820, width: "100%" }}>
@@ -136,14 +137,14 @@ export default function AdminPenyakit() {
       </div>
 
       {/* show modal delete */}
-      {tambahPenyakit && (
-        <TambahPenyakitModal
-          setTambahPenyakit={setTambahPenyakit}
+      {tambahGejala && (
+        <TambahGejalaModal
+          setTambahGejala={setTambahGejala}
           onSuccess={refetchData}
         />
       )}
       {modalEdit && (
-        <EditPenyakitModal
+        <EditGejalaModal
           setModalEdit={setModalEdit}
           onSuccess={refetchData}
           selectedId={selectedId}
