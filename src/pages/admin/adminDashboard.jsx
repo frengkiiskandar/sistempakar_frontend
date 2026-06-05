@@ -37,7 +37,7 @@ const AdminDashboard = () => {
     getPenyakit();
     getGejala();
     getRelasi();
-  });
+  },[]);
 
   // data tables
   const columns = [

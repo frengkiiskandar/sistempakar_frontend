@@ -30,12 +30,17 @@ export default function AdminGejala() {
 
   const columns = [
     {
-      field: "id",
-      headerName: "Id",
-      width: 50,
-      align: "center",
-      headerAlign: "center",
+    field: "no",
+    headerName: "No",
+    width: 70,
+    align: "center",
+    headerAlign: "center",
+    sortable: false,
+    filterable: false,
+    renderCell: (params) => {
+      return params.api.getRowIndexRelativeToVisibleRows(params.id) + 1;
     },
+  },
     {
       field: "nama_gejala",
       headerName: "Nama Gejala",

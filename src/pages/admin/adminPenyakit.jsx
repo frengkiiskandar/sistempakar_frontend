@@ -15,7 +15,7 @@ export default function AdminPenyakit() {
   const [modalEdit, setModalEdit] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [tambahPenyakit, setTambahPenyakit] = useState(false);
-  const [jenisDelete, setJenisDelete] = useState('penyakit')
+  const [jenisDelete, setJenisDelete] = useState("penyakit");
 
   const handleEdit = (id) => {
     setSelectedId(id);
@@ -29,11 +29,16 @@ export default function AdminPenyakit() {
 
   const columns = [
     {
-      field: "id",
-      headerName: "Id",
-      width: 50,
+      field: "no",
+      headerName: "No",
+      width: 70,
       align: "center",
       headerAlign: "center",
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => {
+        return params.api.getRowIndexRelativeToVisibleRows(params.id) + 1;
+      },
     },
     {
       field: "namaPenyakit",

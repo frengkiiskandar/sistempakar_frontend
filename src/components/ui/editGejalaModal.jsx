@@ -78,17 +78,17 @@ const EditGejalaModal = ({ setModalEdit, selectedId, onSuccess }) => {
               ></textarea>
             </div>
             {/* 1 */}
-            <div className="w-full">
+           <div className="w-full">
               <label htmlFor="" className="font-semibold">
                 Kategori
               </label>
-              <input
-                type="text"
-                className="w-full rounded-md outline-none bg-none px-4 py-2 border-2 focus:border-green-600"
-                value={kategori}
-                onChange={(e) => setKategori(e.target.value)}
-                required
-              />
+              <select className="w-full rounded-md outline-none bg-none px-4 py-2 border-2 focus:border-green-600" value={kategori} onChange={(e)=>setKategori(e.target.value)}>
+                <option value=""> -Pilih Kategori Gejala- </option>
+                <option value="daun">Daun</option>
+                <option value="batang">Batang</option>
+                <option value="akar">Akar</option>
+                <option value="buah">Buah</option>
+              </select>
             </div>
            
 

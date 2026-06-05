@@ -56,25 +56,32 @@ const TambahGejalaModal = ({ setTambahGejala, onSuccess }) => {
               <label htmlFor="" className="font-semibold">
                 Nama Gejala
               </label>
-              <input
+              {/* <input
                 type="text"
                 className="w-full rounded-md outline-none bg-none px-4 py-2 border-2 focus:border-green-600"
                 value={namaGejala}
                 onChange={(e) => setNamaGejala(e.target.value)}
                 required
-              />
+              /> */}
+                <textarea
+                className="w-full min-h-28 rounded-md outline-none bg-none px-4 py-2 border-2 focus:border-green-600"
+                value={namaGejala}
+                onChange={(e) => setNamaGejala(e.target.value)}
+                required
+              ></textarea>
             </div>
             {/* 1 */}
             <div className="w-full">
               <label htmlFor="" className="font-semibold">
                 Kategori
               </label>
-              <textarea
-                className="w-full min-h-28 rounded-md outline-none bg-none px-4 py-2 border-2 focus:border-green-600"
-                value={kategori}
-                onChange={(e) => setKategori(e.target.value)}
-                required
-              ></textarea>
+              <select className="w-full rounded-md outline-none bg-none px-4 py-2 border-2 focus:border-green-600" value={kategori} onChange={(e)=>setKategori(e.target.value)}>
+                <option value=""> -Pilih Kategori Gejala- </option>
+                <option value="daun">Daun</option>
+                <option value="batang">Batang</option>
+                <option value="akar">Akar</option>
+                <option value="buah">Buah</option>
+              </select>
             </div>
          
 

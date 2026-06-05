@@ -11,6 +11,7 @@ import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [penyakit, setPenyakit] = useState(0);
@@ -64,14 +65,14 @@ const Home = () => {
             </p>
 
             <div className="flex justify-start items-center gap-5">
-              <button className="px-5 py-2 bg-green-800 hover:bg-green-900 transition-colors duration-150 ease-linear rounded-md text-white font-semibold flex justify-center items-center gap-3">
+              <Link to={'/diagnosa'} className="px-5 py-2 bg-green-800 hover:bg-green-900 transition-colors duration-150 ease-linear rounded-md text-white font-semibold flex justify-center items-center gap-3">
                 <FaStethoscope />
                 Mulai Diagnosa
-              </button>
-              <button className="px-5 py-2 border border-green-800 rounded-md text-black font-semibold flex justify-center items-center gap-3">
+              </Link>
+              <Link to={'/basispengetahuan'} className="px-5 py-2 border border-green-800 rounded-md text-black font-semibold flex justify-center items-center gap-3">
                 <FaBookmark />
                 Lihat Basis Pengetahuan
-              </button>
+              </Link>
             </div>
           </div>
         </div>
