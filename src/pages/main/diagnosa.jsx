@@ -1,9 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import ProgressBar from "../../components/ui/progressBar";
 
 // icons
-import { FaAppleAlt, FaLeaf, FaStethoscope, FaTree } from "react-icons/fa";
+import {
+  FaAppleAlt,
+  FaLeaf,
+  FaStethoscope,
+  FaTree,
+  FaPrint,
+} from "react-icons/fa";
 import { MdNavigateNext } from "react-icons/md";
 import { FaExclamation } from "react-icons/fa6";
 import { GiTreeRoots } from "react-icons/gi";
@@ -11,6 +17,7 @@ import { FiLayers } from "react-icons/fi";
 import { IoFlask } from "react-icons/io5";
 import { GoShieldCheck } from "react-icons/go";
 import { Link } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
 
 const KEYAKINAN_VALUE = {
   mungkin: 0.4,
@@ -68,6 +75,30 @@ const Diagnosa = () => {
     getGejala();
   }, []);
 
+  // print dokumen
+  const printRef = useRef();
+  const reportPrintRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    contentRef: reportPrintRef,
+    documentTitle: hasilDiagnosis?.hasil?.penyakit
+      ? `Laporan-Diagnosis-${hasilDiagnosis.hasil.penyakit}`
+      : "Laporan-Diagnosis",
+    pageStyle: `
+    @page {
+      size: A4 portrait;
+      margin: 15mm;
+    }
+
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  `,
+  });
+
   // ✅ FIX #3: handleProses dengan validasi + loading state
   const handleProses = async () => {
     if (selectedGejala.length === 0) {
@@ -81,7 +112,6 @@ const Diagnosa = () => {
     }));
 
     const payload = { gejala: gejalaPayload };
-
     try {
       setIsLoading(true);
       const res = await axios.post(
@@ -107,8 +137,8 @@ const Diagnosa = () => {
           {/* Breadcrumb */}
           <div className="flex flex-col gap-5">
             <div className="flex items-center gap-3 text-green-800">
-              <Link to={'/'}> Beranda </Link>
-             <MdNavigateNext size={20} />
+              <Link to={"/"}> Beranda </Link>
+              <MdNavigateNext size={20} />
               <p className="text-gray-600">Diagnosis</p>
             </div>
 
@@ -116,7 +146,7 @@ const Diagnosa = () => {
               <div className="p-2 rounded-md bg-green-800 text-white">
                 <FaStethoscope size={20} />
               </div>
-             <p className=" font-bold text-3xl text-black">Diagnosis</p>
+              <p className=" font-bold text-3xl text-black">Diagnosis</p>
             </div>
 
             <p>
@@ -296,57 +326,64 @@ const Diagnosa = () => {
       {showModal && (
         <div className="fixed inset-0  bg-black/50 flex justify-center items-center z-50">
           <div className="w-[60%] shadow-lg border-[3px] bg-white border-primary-700 rounded-2xl overflow-hidden">
-            <div className="bg-primary-100 p-5 ">
-              <h2 className=" text-lg mb-3 text-orange-600 font-medium ">
-                #1 Teratas
-              </h2>
+            <div ref={printRef}>
+              <div className="bg-primary-100 p-5">
+                <div className="flex justify-between items-center gap-10 mb-3">
+                  <h2 className=" text-lg  text-orange-600 font-medium ">
+                    #1 Teratas
+                  </h2>
+                  <button onClick={handlePrint} className="bg-green-700 rounded-full px-4 py-1 text-white hover:bg-green-800 transition-colors duration-200 ease-linear">
+                    <FaPrint />
+                  </button>
+                </div>
 
-              <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start">
+                  <div className="">
+                    <p className="font-bold text-3xl ">
+                      {hasilDiagnosis.hasil.penyakit}{" "}
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-orange-100 rounded-2xl border border-orange-300 text-orange-600 flex flex-col justify-center items-center gap-0 text-3xl font-bold ">
+                    {(hasilDiagnosis.hasil.nilai_cf * 100).toFixed(1)} %
+                    <span className="text-sm font-normal">Terindikasi</span>
+                  </div>
+                </div>
                 <div className="">
-                  <p className="font-bold text-3xl ">
-                    {hasilDiagnosis.hasil.penyakit}{" "}
-                  </p>
+                  <ProgressBar
+                    percent={Math.ceil(hasilDiagnosis.hasil.nilai_cf * 100)}
+                  />
                 </div>
+                <p className="">
+                  Niali CF:{" "}
+                  <span className="font-semibold">
+                    {hasilDiagnosis.hasil.nilai_cf}{" "}
+                  </span>
+                </p>
+              </div>
 
-                <div className="p-3 bg-orange-100 rounded-2xl border border-orange-300 text-orange-600 flex flex-col justify-center items-center gap-0 text-3xl font-bold ">
-                  {(hasilDiagnosis.hasil.nilai_cf * 100).toFixed(1)} %
-                  <span className="text-sm font-normal">Terindikasi</span>
+              {/* section deskripsi */}
+              <div className="p-5 bg-white flex justify-start items-start gap-3">
+                <div className="p-1 rounded-full border-4 border-primary-600">
+                  <FaExclamation size={10} />
+                </div>
+                <div>
+                  <p className="font-semibold "> Deskripsi</p>
+                  <span className="text-gray-600">
+                    {hasilDiagnosis.hasil.deskripsi}
+                  </span>
                 </div>
               </div>
-              <div className="">
-                <ProgressBar
-                  percent={Math.ceil(hasilDiagnosis.hasil.nilai_cf * 100)}
-                />
-              </div>
-              <p className="">
-                Niali CF:{" "}
-                <span className="font-semibold">
-                  {hasilDiagnosis.hasil.nilai_cf}{" "}
-                </span>
-              </p>
-            </div>
 
-            {/* section deskripsi */}
-            <div className="p-5 bg-white flex justify-start items-start gap-3">
-              <div className="p-1 rounded-full border-4 border-primary-600">
-                <FaExclamation size={10} />
-              </div>
-              <div>
-                <p className="font-semibold "> Deskripsi</p>
-                <span className="text-gray-600">
-                  {hasilDiagnosis.hasil.deskripsi}
-                </span>
-              </div>
-            </div>
-
-            {/* section pencegahan */}
-            <div className="p-5 bg-white flex justify-start items-start gap-3">
+              {/* section pencegahan */}
+              <div className="p-5 bg-white flex justify-start items-start gap-3">
                 <GoShieldCheck size={25} />
-              <div>
-                <p className="font-semibold "> Pencegahan</p>
-                <span className="text-gray-600">
-                  {hasilDiagnosis.hasil.pencegahan}
-                </span>
+                <div>
+                  <p className="font-semibold "> Pencegahan</p>
+                  <span className="text-gray-600">
+                    {hasilDiagnosis.hasil.pencegahan}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -357,11 +394,178 @@ const Diagnosa = () => {
               >
                 Tutup
               </button>
-              <button className="w-full bg-green-800 hover:bg-green-900 text-white transition-colors duration-150 ease-linear rounded-md py-2" onClick={()=>window.location.reload()}>Mulai Ulang</button>
+              <button
+                className="w-full bg-green-800 hover:bg-green-900 text-white transition-colors duration-150 ease-linear rounded-md py-2"
+                onClick={() => window.location.reload()}
+              >
+                Mulai Ulang
+              </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* TEMPLATE KHUSUS PRINT */}
+      <div
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          top: 0,
+        }}
+      >
+        <div ref={reportPrintRef}>
+          <div className="bg-white text-black p-10 min-h-[1123px]">
+            {/* Header */}
+            <div className="border-b-4 border-green-700 pb-5 mb-8">
+              <h1 className="text-3xl font-bold text-green-800">
+                SISTEM PAKAR DIAGNOSIS TANAMAN KELENGKENG
+              </h1>
+
+              <p className="text-gray-600 mt-2">
+                Laporan Hasil Diagnosis Penyakit dan Hama
+              </p>
+            </div>
+
+            {/* Info */}
+            <div className="grid grid-cols-2 gap-5 mb-8">
+              <div>
+                <p>
+                  <span className="font-semibold">Tanggal :</span>{" "}
+                  {new Date().toLocaleDateString("id-ID")}
+                </p>
+
+                <p>
+                  <span className="font-semibold">Waktu :</span>{" "}
+                  {new Date().toLocaleTimeString("id-ID")}
+                </p>
+              </div>
+
+              <div className="text-right">
+                <p>
+                  <span className="font-semibold">Nomor Diagnosis :</span>
+                </p>
+
+                <p>DX-{Date.now()}</p>
+              </div>
+            </div>
+
+            {/* Ringkasan */}
+            <div className="bg-green-50 border border-green-300 rounded-xl p-6 mb-8">
+              <h2 className="text-xl font-bold text-green-800 mb-3">
+                Hasil Diagnosis
+              </h2>
+
+              <p className="text-3xl font-bold">
+                {hasilDiagnosis?.hasil?.penyakit}
+              </p>
+
+              <div className="mt-5">
+                <div className="w-full h-5 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-green-700"
+                    style={{
+                      width: `${(hasilDiagnosis?.hasil?.nilai_cf || 0) * 100}%`,
+                    }}
+                  />
+                </div>
+
+                <p className="mt-2 font-semibold text-lg">
+                  {((hasilDiagnosis?.hasil?.nilai_cf || 0) * 100).toFixed(2)}%
+                </p>
+              </div>
+            </div>
+
+            {/* Gejala */}
+            <div className="mb-8">
+              <h2 className="text-lg font-bold border-b pb-2 mb-3">
+                Gejala Yang Dipilih
+              </h2>
+
+              <table className="w-full border-collapse border">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border p-3">No</th>
+                    <th className="border p-3">Gejala</th>
+                    <th className="border p-3">Keyakinan</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {dataGejala
+                    .filter((g) => selectedGejala.includes(g.id))
+                    .map((g, index) => (
+                      <tr key={g.id}>
+                        <td className="border p-3 text-center">{index + 1}</td>
+
+                        <td className="border p-3">{g.nama_gejala}</td>
+
+                        <td className="border p-3 capitalize">
+                          {keyakinan[g.id]}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Deskripsi */}
+            <div className="mb-8">
+              <h2 className="text-lg font-bold border-b pb-2 mb-3">
+                Deskripsi Penyakit
+              </h2>
+
+              <p className="leading-8 text-justify">
+                {hasilDiagnosis?.hasil?.deskripsi}
+              </p>
+            </div>
+
+            {/* Pencegahan */}
+            <div className="mb-8">
+              <h2 className="text-lg font-bold border-b pb-2 mb-3">
+                Pencegahan dan Penanganan
+              </h2>
+
+              <p className="leading-8 text-justify">
+                {hasilDiagnosis?.hasil?.pencegahan}
+              </p>
+            </div>
+
+            {/* Kesimpulan */}
+            <div className="mb-10">
+              <h2 className="text-lg font-bold border-b pb-2 mb-3">
+                Kesimpulan
+              </h2>
+
+              <p className="leading-8 text-justify">
+                Berdasarkan gejala yang dipilih pengguna dan perhitungan metode
+                Certainty Factor (CF), tanaman kelengkeng terindikasi mengalami
+                penyakit atau hama
+                <span className="font-semibold">
+                  {" "}
+                  {hasilDiagnosis?.hasil?.penyakit}
+                </span>
+                dengan tingkat keyakinan sebesar
+                <span className="font-semibold">
+                  {" "}
+                  {((hasilDiagnosis?.hasil?.nilai_cf || 0) * 100).toFixed(2)}%
+                </span>
+                .
+              </p>
+            </div>
+
+            {/* Tanda tangan */}
+            <div className="mt-24 flex justify-end">
+              <div className="text-center">
+                <p>{new Date().toLocaleDateString("id-ID")}</p>
+
+                <div className="h-24" />
+
+                <p className="font-semibold">Sistem Pakar Kelengkeng</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
